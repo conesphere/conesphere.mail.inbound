@@ -64,7 +64,7 @@
     group: wheel
   notify: reload_pfctl
 - template:
-    src: whitescan.pl
+    src: spamd-whitescan/whitescan.pl
     dest: /root/whitescan.pl
     mode: "0755"
     owner: root
