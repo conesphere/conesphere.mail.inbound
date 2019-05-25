@@ -1,0 +1,5 @@
+{% for user in mail_relay_config.keys() %}
+{% for domain in mail_relay_config[user].domains %}
+@{{ domain }}
+{% endfor %}
+{% endfor %}

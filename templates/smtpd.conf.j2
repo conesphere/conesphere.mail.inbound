@@ -1,0 +1,26 @@
+#derived from $OpenBSD: smtpd.conf,v 1.11 2018/06/04 21:10:58 jmc Exp $
+
+# This is the smtpd server system-wide configuration file.
+# See smtpd.conf(5) for more information.
+
+smtp max-message-size 200M
+
+pki mypki cert "/etc/letsencrypt/live/{{ mail_domain }}/cert.pem"
+pki mypki key "/etc/letsencrypt/live/{{ mail_domain }}/privkey.pem"
+
+table sender_domains file:/etc/mail/sender_domains
+table credentials file:/etc/mail/credentials
+table domains file:/etc/mail/domains
+
+# To accept external mail, replace with: listen on all
+listen on lo0
+listen on vio1 port 25 tls pki mypki
+listen on vio1 port 587 tls-require pki mypki auth <credentials> senders <sender_domains>
+
+action "relay" relay
+action "spamassassin" relay host "smtp://sa-filter.mail.csph.cloud:25"
+
+match from any for domain <domains> action "spamassassin"
+#match from local for <smarthost_domains> action "relay_smarthost"
+match from local for any action "relay"
+

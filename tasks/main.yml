@@ -1,0 +1,119 @@
+---
+# tasks file for conesphere.mail.inbound
+- openbsd_pkg:
+    name:
+      - certbot
+      - greyscanner
+      - p5-Mail-SPF
+    state: latest
+- template:
+    src: certbot_cli.ini.j2
+    dest: /etc/letsencrypt/cli.ini
+    mode: "0640"
+    owner: root
+    group: wheel
+- shell: "certbot certonly --agree-tos --standalone -d {{ item }} {{ mail_certbot_args|default('') }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ item }}/cert.pem"
+  with_items:
+    - "{{ mail_domain }}"
+- template:
+    src: sender_domains.table.j2
+    dest: /etc/mail/sender_domains
+    mode: "0640"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+- template:
+    src: domains.table.j2
+    dest: /etc/mail/domains
+    mode: "0640"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+- template:
+    src: credentials.table.j2
+    dest: /etc/mail/credentials
+    mode: "0640"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+- template:
+    src: smtpd.conf.j2
+    dest: /etc/mail/smtpd.conf
+    mode: "0644"
+    owner: root
+    group: wheel
+  notify: restart_smtpd
+- shell: touch /etc/mail/nospamd
+  args:
+    creates: /etc/mail/nospamd
+  notify: reload_pfctl
+- template:
+    src: nospamd.j2
+    dest: /etc/mail/nospamd
+    mode: "0644"
+    owner: root
+    group: wheel
+  notify: reload_pfctl
+- template:
+    src: pf.conf.j2
+    dest: /etc/pf.conf
+    mode: "0600"
+    owner: root
+    group: wheel
+  notify: reload_pfctl
+- template:
+    src: whitescan.pl
+    dest: /root/whitescan.pl
+    mode: "0755"
+    owner: root
+    group: wheel
+- name: enable cronjob for whitescan
+  cron:
+    name: WHITESCAN_SETUP
+    minute: '*/2'
+    user: root
+    job: '/root/whitescan.pl -p {{ spamd_passtime }}'
+- name: enable cronjob for spamd
+  cron:
+    name: SPAMD_SETUP
+    minute: 0
+    user: root
+    job: 'sleep $((RANDOM \% 2048)) && /usr/libexec/spamd-setup'
+- copy:
+    content: "{{ spamd_key|default('LuminanceStickDrumRuckusCubbyholeSquealingRecopyBaggyTrustableCarpentry') }}"
+    dest: /etc/mail/spamd.key
+    owner: root
+    group: wheel
+    mode: "0600"
+  notify: restart_spamd
+- template:
+    # this is a bit sad as the content of this file is not configurable
+    src: spamd.alloweddomains.j2
+    dest: /etc/mail/spamd.alloweddomains
+    owner: root
+    group: wheel
+    mode: "0644"
+  notify: restart_spamd
+- template:
+    # this is a bit sad as the content of this file is not configurable
+    src: spamd.conf.j2
+    dest: /etc/mail/spamd.conf
+    owner: root
+    group: wheel
+    mode: "0644"
+- lineinfile:
+    dest: /etc/rc.conf.local
+    regexp: "^spamd_flags="
+    line: 'spamd_flags=-4 -w1 -B 500 -y {{ spamd_sync|default(intif) }} -Y {{ spamd_synctargets|default(["127.0.0.1"])|join(" -Y ") }} -G {{ spamd_passtime }}:{{ spamd_greyexp }}:{{ spamd_whiteexp }} -s {{ spamd_chardelay }} -S {{ spamd_stutter }} -h {{ mail_domain }} -M {{ mail_mxtrap|default(["1.1.1.1"])|join("-M ") }} -K /etc/letsencrypt/live/{{ mail_domain }}/privkey.pem -C /etc/letsencrypt/live/{{ mail_domain }}/cert.pem'
+    create: yes
+  notify: restart_spamd
+#- template:
+#    src: greyscanner.conf.j2
+#    dest: /etc/greyscanner.conf
+#    mode: "0644"
+#    owner: root
+#    group: wheel
+#  notify: restart_greyscanner
+

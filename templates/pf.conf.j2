@@ -1,0 +1,32 @@
+#	$OpenBSD: pf.conf,v 1.55 2017/12/03 20:40:04 sthen Exp $
+#
+# See pf.conf(5) and /etc/examples/pf.conf
+
+set skip on lo
+
+block return    # block stateless traffic
+pass            # establish keep-state
+
+# By default, do not permit remote connections to X11
+block return in on ! lo0 proto tcp to port 6000:6010
+
+# Port build user does not need network
+block return out log proto {tcp udp} user _pbuild
+
+antispoof quick for { egress {{ intif }} }
+pass in on { {{ intif }} } inet
+
+match in all scrub (no-df random-id max-mss 1442)
+match out on egress inet from !(egress:network) to any nat-to (egress:0)
+match out on egress inet6 from !(egress:network) to any nat-to (egress)
+
+#pass in on egress inet proto tcp from any to (egress) port { 80 443 } rdr-to 192.168.1.2
+
+# spamd rules 
+table <spamd-white> persist
+table <nospamd> persist file "/etc/mail/nospamd"
+pass in on egress proto tcp from any to any port smtp divert-to 127.0.0.1 port spamd
+pass in on egress proto tcp from <nospamd> to any port smtp
+pass in log on egress proto tcp from <spamd-white> to any port smtp
+pass out log on egress proto tcp from any to any port smtp
+
