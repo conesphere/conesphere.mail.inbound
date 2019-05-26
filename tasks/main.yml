@@ -63,9 +63,17 @@
     owner: root
     group: wheel
   notify: reload_pfctl
-- template:
+- name: install whitescan script
+  template:
     src: spamd-whitescan/whitescan.pl
     dest: /root/whitescan.pl
+    mode: "0755"
+    owner: root
+    group: wheel
+- name: install spamdb2human.pl filter script
+  template:
+    src: spamd-whitescan/spamdb2human.pl
+    dest: /root/spamdb2human.pl
     mode: "0755"
     owner: root
     group: wheel
