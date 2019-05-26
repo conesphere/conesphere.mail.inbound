@@ -77,6 +77,13 @@
     mode: "0755"
     owner: root
     group: wheel
+- name: install import_lists.sh
+  template:
+    src: spamd-whitescan/import_lists.sh
+    dest: /root/import_lists.sh
+    mode: "0755"
+    owner: root
+    group: wheel
 - name: enable cronjob for whitescan
   cron:
     name: WHITESCAN_SETUP
