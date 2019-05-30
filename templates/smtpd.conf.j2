@@ -11,16 +11,26 @@ pki mypki key "/etc/letsencrypt/live/{{ mail_domain }}/privkey.pem"
 table sender_domains file:/etc/mail/sender_domains
 table credentials file:/etc/mail/credentials
 table domains file:/etc/mail/domains
+table outbound_credentials file:/etc/mail/outbound_credentials
 
 # To accept external mail, replace with: listen on all
 listen on lo0
 listen on vio1 port 25 tls pki mypki
 listen on vio1 port 587 tls-require pki mypki auth <credentials> senders <sender_domains>
 
-action "relay" relay
 action "spamassassin" relay host "smtp://sa-filter.mail.csph.cloud:25"
-
 match from any for domain <domains> action "spamassassin"
-#match from local for <smarthost_domains> action "relay_smarthost"
+
+{% for user in mail_outbound_config %}
+table outbound_{{ user }} file:/etc/mail/outbound_{{ user }}.domains
+{% if mail_outbound_config[user].delivery_password is defined %}
+action "outbound_{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}" auth <outbound_credentials>
+{% else %} 
+action "{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}"
+{% endif %}
+match from any for domain <outbound_{{ user }}> action "outbound_{{ user }}"
+{% endfor %}
+
+action "relay" relay helo "{{ mail_helo|default(mail_domain) }}"
 match from local for any action "relay"
 
