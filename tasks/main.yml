@@ -117,7 +117,7 @@
     name: SMTPD_MQUEUE_CHECK
     minute: 23
     user: root
-    job: 'sleep $((RANDOM \% 300)) && /root/chk_smtpd_mqueue.sh'
+    job: '/root/chk_smtpd_mqueue.sh'
 - name: enable cronjob for spamd
   cron:
     name: SPAMD_SETUP
