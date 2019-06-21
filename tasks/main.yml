@@ -99,12 +99,25 @@
     mode: "0755"
     owner: root
     group: wheel
+- name: install chk_smtpd_mqueue.sh
+  template:
+    src: chk_smtpd_mqueue.sh.j2
+    dest: /root/chk_smtpd_mqueue.sh
+    mode: "0755"
+    owner: root
+    group: wheel
 - name: enable cronjob for whitescan
   cron:
     name: WHITESCAN_SETUP
     minute: '*/2'
     user: root
     job: '/root/whitescan.pl -p {{ spamd_passtime }}'
+- name: enable mailq check
+  cron:
+    name: SMTPD_MQUEUE_CHECK
+    minute: 23
+    user: root
+    job: 'sleep $((RANDOM \% 300)) && /root/chk_smtpd_mqueue.sh'
 - name: enable cronjob for spamd
   cron:
     name: SPAMD_SETUP
