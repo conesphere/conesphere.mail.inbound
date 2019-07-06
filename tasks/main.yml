@@ -111,7 +111,7 @@
     name: WHITESCAN_SETUP
     minute: '*/2'
     user: root
-    job: '/root/whitescan.pl -p {{ spamd_passtime }}'
+    job: '/root/whitescan.pl -p {{ spamd_passtime }} -v 2>> /var/log/whitescan.log'
 - name: enable mailq check
   cron:
     name: SMTPD_MQUEUE_CHECK
