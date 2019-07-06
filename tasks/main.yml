@@ -123,7 +123,7 @@
     name: SPAMD_SETUP
     minute: 0
     user: root
-    job: 'sleep $((RANDOM \% 2048)) && /usr/libexec/spamd-setup'
+    job: 'sleep $((RANDOM \% 2048)) && /usr/libexec/spamd-setup 2>&1 | grep -v -e "^ftp:"'
 - copy:
     content: "{{ spamd_key|default('LuminanceStickDrumRuckusCubbyholeSquealingRecopyBaggyTrustableCarpentry') }}"
     dest: /etc/mail/spamd.key
