@@ -173,4 +173,4 @@
     hour: 1
     day: 23
     user: root
-    job: 'sleep $((RANDOM \% 86400)) && /root/renew_certificates.sh 2>&1 >> /var/log/certbot.log
+    job: 'sleep $((RANDOM \% 86400)) && /root/renew_certificates.sh 2>&1 >> /var/log/certbot.log'
