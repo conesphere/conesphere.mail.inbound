@@ -1,0 +1,6 @@
+#!/bin/ksh
+certbot renew -n || exit $?
+sleep 2
+rcctl restart smtpd || exit $?
+sleep 2
+rcctl restart spamd || exit $?
