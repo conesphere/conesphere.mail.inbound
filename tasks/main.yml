@@ -159,4 +159,18 @@
 #    owner: root
 #    group: wheel
 #  notify: restart_greyscanner
-
+- name: install renew_certificates
+  template:
+    src: renew_certificates.sh.j2
+    dest: /root/renew_certificates.sh
+    mode: "0755"
+    owner: root
+    group: wheel
+- name: enable cronjob for certbot
+  cron:
+    name: CERTBOT_RENEW
+    minute: 1
+    hour: 1
+    day: 23
+    user: root
+    job: 'sleep $((RANDOM \% 86400)) && /root/renew_certificates.sh 2>&1 >> /var/log/certbot.log
