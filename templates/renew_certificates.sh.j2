@@ -1,5 +1,5 @@
 #!/bin/ksh
-certbot renew -n || exit $?
+/usr/local/bin/certbot renew -n || exit $?
 sleep 2
 rcctl restart smtpd || exit $?
 sleep 2

@@ -171,6 +171,6 @@
     name: CERTBOT_RENEW
     minute: 1
     hour: 1
-    day: 23
+    day: 24
     user: root
     job: 'sleep $((RANDOM \% 86400)) && /root/renew_certificates.sh 2>&1 >> /var/log/certbot.log'
