@@ -5,7 +5,7 @@
 
 smtp max-message-size 200M
 
-pki mypki cert "/etc/letsencrypt/live/{{ mail_domain }}/cert.pem"
+pki mypki cert "/etc/letsencrypt/live/{{ mail_domain }}/fullchain.pem"
 pki mypki key "/etc/letsencrypt/live/{{ mail_domain }}/privkey.pem"
 
 table sender_domains file:/etc/mail/sender_domains
