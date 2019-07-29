@@ -149,7 +149,7 @@
 - lineinfile:
     dest: /etc/rc.conf.local
     regexp: "^spamd_flags="
-    line: 'spamd_flags=-4 -w1 -B 500 -y {{ spamd_sync|default(intif) }} -Y {{ spamd_synctargets|default(["127.0.0.1"])|join(" -Y ") }} -G {{ spamd_passtime }}:{{ spamd_greyexp }}:{{ spamd_whiteexp }} -s {{ spamd_chardelay }} -S {{ spamd_stutter }} -h {{ mail_domain }} -M {{ mail_mxtrap|default(["1.1.1.1"])|join("-M ") }} -K /etc/letsencrypt/live/{{ mail_domain }}/privkey.pem -C /etc/letsencrypt/live/{{ mail_domain }}/cert.pem'
+    line: 'spamd_flags=-4 -w1 -B 500 -y {{ spamd_sync|default(intif) }} -Y {{ spamd_synctargets|default(["127.0.0.1"])|join(" -Y ") }} -G {{ spamd_passtime }}:{{ spamd_greyexp }}:{{ spamd_whiteexp }} -s {{ spamd_chardelay }} -S {{ spamd_stutter }} -h {{ mail_domain }} -M {{ mail_mxtrap|default(["1.1.1.1"])|join("-M ") }} -K /etc/letsencrypt/live/{{ mail_domain }}/privkey.pem -C /etc/letsencrypt/live/{{ mail_domain }}/fullchain.pem'
     create: yes
   notify: restart_spamd
 #- template:
