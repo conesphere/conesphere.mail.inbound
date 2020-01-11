@@ -12,11 +12,14 @@ table sender_domains file:/etc/mail/sender_domains
 table credentials file:/etc/mail/credentials
 table domains file:/etc/mail/domains
 table outbound_credentials file:/etc/mail/outbound_credentials
+table src_regex_reject file:/etc/mail/src_regex_reject
 
 # To accept external mail, replace with: listen on all
 listen on lo0
 listen on vio1 port 25 tls pki mypki
 listen on vio1 port 587 tls-require pki mypki auth <credentials> senders <sender_domains>
+
+match from src regex <src_regex_reject> for domain <domains> reject
 
 action "spamassassin" relay host "smtp://sa-filter.mail.csph.cloud:25"
 match from any for domain <domains> action "spamassassin"
