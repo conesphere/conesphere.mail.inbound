@@ -1,3 +1,3 @@
-{% for src in mail_src_regex_reject|default[] %}
+{% for src in mail_src_regex_reject|default([]) %}
 {{ src }}
 {% endfor %}
