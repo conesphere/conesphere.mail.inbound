@@ -19,7 +19,7 @@ listen on lo0
 listen on vio1 port 25 tls pki mypki
 listen on vio1 port 587 tls-require pki mypki auth <credentials> senders <sender_domains>
 
-match from src regex <src_regex_reject> for domain <domains> reject
+match mail-from regex <src_regex_reject> for domain <domains> reject
 
 action "spamassassin" relay host "smtp://sa-filter.mail.csph.cloud:25"
 match from any for domain <domains> action "spamassassin"
