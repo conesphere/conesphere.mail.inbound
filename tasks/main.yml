@@ -175,6 +175,20 @@
     user: root
     job: 'sleep $((RANDOM \% 86400)) && /root/renew_certificates.sh 2>&1 >> /var/log/certbot.log'
 - template:
+    dest: "/etc/dnsmasq.conf"
+    src: "dnsmasq.conf.j2"
+    owner: root
+    group: wheel
+    mode: "0644"
+  notify: restart_dnsmasq
+- file:
+    path: "/etc/dnsmasq.d"
+    owner: root
+    group: wheel
+    state: directory
+    mode: "0755"
+  notify: restart_dnsmasq
+- template:
     dest: "/etc/resolv.dnsmasq.conf"
     src: "dnsmasq_resolv.conf.j2"
     owner: root
