@@ -21,7 +21,7 @@ listen on vio1 port 587 tls-require pki mypki auth <credentials> senders <sender
 
 match mail-from regex <src_regex_reject> for domain <domains> reject
 
-action "spamassassin" relay host "smtp://sa-filter.mail.csph.cloud:25"
+action "spamassassin" relay host "smtp://{{ smtpd_spamassassin_host }}:25"
 match from any for domain <domains> action "spamassassin"
 
 {% for user in mail_outbound_config %}

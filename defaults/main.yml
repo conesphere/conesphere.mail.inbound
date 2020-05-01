@@ -1,7 +1,7 @@
 ---
 # defaults file for conesphere.mail.inbound
 
-# the mail_relay_shadow is to provide the option to put 
+# the mail_relay_shadow is to provide the option to put
 # credentials from mail_relay_config into an ansible-vault
 mail_relay_shadow: '{{ mail_relay_config }}'
 
@@ -11,6 +11,10 @@ mail_outbound_shadow: '{{ mail_outbound_config }}'
 
 # this variable configures the maximum message size allowed in smtpd 
 smtpd_max_message_size: 200M
+
+# the spamassassin host to route all mail to must be configuren within the inventory
+# for your plattform.
+smtpd_spamassassin_host: 'sa-filter.example.com'
 
 # -S in seconds 
 spamd_stutter: 15
