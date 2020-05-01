@@ -190,7 +190,7 @@
   notify: restart_dnsmasq
 - template:
     dest: "/etc/dnsmasq.d/dns.conf"
-    src: "dnsmasq_dns.j2"
+    src: "dnsmasq_dns.conf.j2"
     owner: root
     group: wheel
     mode: "0644"
