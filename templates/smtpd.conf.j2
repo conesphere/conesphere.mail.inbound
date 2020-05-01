@@ -3,7 +3,7 @@
 # This is the smtpd server system-wide configuration file.
 # See smtpd.conf(5) for more information.
 
-smtp max-message-size 200M
+smtp max-message-size {{ smtpd_max_message_size }}
 
 pki mypki cert "/etc/letsencrypt/live/{{ mail_domain }}/fullchain.pem"
 pki mypki key "/etc/letsencrypt/live/{{ mail_domain }}/privkey.pem"
@@ -26,7 +26,7 @@ match from any for domain <domains> action "spamassassin"
 
 {% for user in mail_outbound_config %}
 table outbound_{{ user }} file:/etc/mail/outbound_{{ user }}.domains
-{% if mail_outbound_config[user].delivery_password is defined %}
+{% if mail_outbound_shadow[user].delivery_password is defined %}
 action "outbound_{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}" auth <outbound_credentials>
 {% else %} 
 action "{{ user }}" relay helo "{{ mail_helo|default(mail_domain) }}" tls no-verify host "{{ mail_outbound_config[user].delivery_url }}"
