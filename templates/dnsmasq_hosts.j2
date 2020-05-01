@@ -1,0 +1,5 @@
+# This file is created via ansible and mostly used to create DNS resolving of 
+# the hosts of the internal network. 
+{% for line in inbound_hosts_dnsmasq %}
+{{ line }}
+{% endfor %}

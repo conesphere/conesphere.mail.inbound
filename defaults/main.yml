@@ -30,6 +30,19 @@ spamd_greyexp: 4
 # hours
 spamd_whiteexp: 864
 
+# default dnsmasq.d/dns.conf
+inbound_dnsmasq_conf: []
+# default resolv.dnsmasq.conf
+inbound_resolv_dnsmasq_conf: {}
+# default hosts.dnsmasq
+inbound_hosts_dnsmasq: []
+# structure:
+# can be used to group the entry and also to 
+# insert comments - '#': ['this is a comment']
+# hosts:
+#   - 'n.n.n.n':
+#         - name1
+#         - name2
 
 #nospamd_table: '{{ nospamd_table_defaults }}'
 nospamd_table: []

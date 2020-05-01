@@ -1,0 +1,12 @@
+# we do have our own local dnsmasq instance running on each 
+# inbound mailserver so that dns will always work
+interface=lo0
+no-dhcp-interface=lo0
+domain-needed
+bogus-priv
+dns-loop-detect
+resolv-file=/etc/resolv.dnsmasq.conf
+addn-hosts=/etc/hosts.dnsmasq
+{% for line in inbound_dnsmasq_conf %}
+{{ line }}
+{% endfor %}
