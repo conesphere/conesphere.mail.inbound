@@ -74,6 +74,13 @@
     creates: /etc/mail/nospamd
   notify: reload_pfctl
 - template:
+    src: blacklist_ip.j2
+    dest: /etc/mail/blacklist_ip
+    mode: "0644"
+    owner: root
+    group: wheel
+  notify: reload_pfctl
+- template:
     src: nospamd.j2
     dest: /etc/mail/nospamd
     mode: "0644"

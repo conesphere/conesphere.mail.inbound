@@ -25,8 +25,10 @@ match out on egress inet6 from !(egress:network) to any nat-to (egress)
 # spamd rules 
 table <spamd-white> persist
 table <nospamd> persist file "/etc/mail/nospamd"
+table <blacklist> persist file "/etc/mail/blacklist_ip"
 pass in on egress proto tcp from any to any port smtp divert-to 127.0.0.1 port spamd
 pass in on egress proto tcp from <nospamd> to any port smtp
 pass in log on egress proto tcp from <spamd-white> to any port smtp
+pass in log on egress proto tcp from <blacklist> to any port spamd
 pass out log on egress proto tcp from any to any port smtp
 

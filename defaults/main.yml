@@ -46,6 +46,7 @@ inbound_hosts_dnsmasq: []
 
 #nospamd_table: '{{ nospamd_table_defaults }}'
 nospamd_table: []
+blacklist_table: []
 
 nospamd_table_defaults:
   - '##############################################################################################'
